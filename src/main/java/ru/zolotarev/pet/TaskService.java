@@ -1,6 +1,8 @@
 package ru.zolotarev.pet;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -25,24 +27,21 @@ public class TaskService {
     TaskRepository taskRepository = new TaskRepository();
 
 
-    private static LocalDate checkAndSetDeadlineByDate(LocalDate deadline) {
-        if (!LocalDate.now().minusDays(1).isBefore(deadline) || deadline == null) {
-            System.out.println("Неверный формат даты. Устанавливается дедлайн на завтра.");
+    static LocalDate checkAndSetDeadlineByDate(LocalDate deadline) {
+        if (deadline == null || !LocalDate.now().minusDays(1).isBefore(deadline)) {
+            System.out.println("Формат даты неверный. Устанавливается дедлайн на завтра.");
             deadline = LocalDate.now().plusDays(1);
         }
         return deadline;
     }
 
-    public void createTaskAndAdd(String name, String description, LocalDate deadline, TaskStatus status) {
-        Task task = new Task(name, description, LocalDate.now(), status);
-        task.setDeadline(checkAndSetDeadlineByDate(deadline));
-
-        if (name.length() < 3) {
-            String defaultName = "DefaultTaskName" + task.getID();
-            task.setName(defaultName);
+    static LocalDate createDeadline(String deadline) {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        try {
+            return LocalDate.parse(deadline, dtf);
+        } catch (DateTimeParseException e) {
+            return null;
         }
-
-        taskRepository.addTask(task);
     }
 
     public void changeTaskName(String taskNameOrID, String newTaskName) {
@@ -82,9 +81,9 @@ public class TaskService {
                 .collect(Collectors.toList());
     }
 
-    public List<Task> getSortedTasksByDeadline (){
+    public List<Task> getSortedTasksByDeadline() {
         return taskRepository.getAllTasks().stream()
-                .sorted((t1,t2)->
+                .sorted((t1, t2) ->
                         t1.getDeadline().compareTo(t2.getDeadline()))
                 .collect(Collectors.toList());
     }

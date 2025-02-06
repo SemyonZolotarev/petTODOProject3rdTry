@@ -2,11 +2,13 @@ package ru.zolotarev.pet;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Setter
 @Getter
 public class Task {
@@ -18,11 +20,11 @@ public class Task {
     private TaskStatus status = TaskStatus.TODO;
 
     public String toString() {
-        return "------------" +
-                "TaskName is '" + this.getName() + "' .ID: " + this.getID()
+        return "\n------------" +
+                "\nTaskName: '" + this.getName() + "'. ID: " + this.getID()
                 + ".\n Status: " + this.getStatus()
                 + ".\n Deadline: " + this.getDeadline()
                 + ".\n Description: " + this.getDescription() +
-                "------------";
+                "\n------------";
     }
 }

@@ -18,12 +18,16 @@ public class TaskRepository {
         tasks.add(task);
     }
 
-    public Task getTask(String name){
+    public Task getTask(String name) {
         try {
             int ID = Integer.parseInt(name);
             return getTaskByID(ID);
-        } catch (NumberFormatException e){
-            return getTaskByName(name);
+        } catch (NumberFormatException e) {
+            try {
+                return getTaskByName(name);
+            } catch (IllegalArgumentException r) {
+                return null;
+            }
         }
     }
 
@@ -37,7 +41,7 @@ public class TaskRepository {
                 .findFirst().orElseThrow(() -> new IllegalArgumentException("Задача с таким ID не найдена."));
     }
 
-    public List<Task> getAllTasks(){
+    public List<Task> getAllTasks() {
         return tasks;
     }
 }
