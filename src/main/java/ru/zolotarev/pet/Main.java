@@ -10,8 +10,8 @@ public class Main {
     public static void main(String[] args) {
 
         while (true) {
-            System.out.println("Введите команду ('help' - список доступных команд)");
-            switch (sc.nextLine()) {
+            System.out.println("\nВведите команду ('help' - список доступных команд)");
+            switch (sc.nextLine().toLowerCase()) {
                 case "help":
                     System.out.println(help);
                     break;
@@ -24,6 +24,15 @@ public class Main {
                 case "edit":
                     editTask();
                     break;
+                case "sort":
+                    sortTaskList();
+                    break;
+                case "del":
+                    deleteTask();
+                    break;
+                case "filter":
+                    filterTaskList();
+                    break;
                 case "exit":
                     return;
             }
@@ -31,9 +40,12 @@ public class Main {
 
     }
 
-    private static String help = "add - добавляет задачу" +
+    private static String help = "add - добавить задачу" +
             "\nlist - вывести список задач" +
             "\nedit - редактировать задачу" +
+            "\nsort - сортировка задач" +
+            "\ndel - удалить задачу" +
+            "\nfilter - отфильтровать задачу по статусу" +
             "\nexit - завершение программы";
 
     private static void addTask() {
@@ -68,11 +80,11 @@ public class Main {
             return;
         }
         while (true) {
-            System.out.println("\nname - изменить задачу" +
+            System.out.println("\nname - изменить наименование" +
                     "\ndesc - изменить описание" +
                     "\ndate - изменить дедлайн" +
                     "\nstatus - изменить статус" +
-                    "\nout - выйти в главное меню");
+                    "\nout - выйти в главное меню\n");
             switch (sc.nextLine().toLowerCase()) {
                 case "name": {
                     System.out.print("Введите новое название задачи: ");
@@ -101,6 +113,69 @@ public class Main {
                     return;
                 }
             }
+        }
+    }
+
+    private static void sortTaskList() {
+        System.out.println("Введите команду:" +
+                "\n'1' - сортировка по статусу" +
+                "\n'2' - сортировка по сроку выполнения");
+        switch (sc.nextLine()) {
+            case "1":
+                System.out.println("Сортировка по статусу:" +
+                        "'1' - быстрая сортировка" +
+                        "'2' - сортировка с параметрами");
+                switch (sc.nextLine()) {
+                    case "1":
+                        System.out.println(taskService.getSortedTasksByStatus());
+                        return;
+                    case "2":
+                        System.out.println("Введите порядок сортировки по статусу (TODO, IN_PROCESS, DONE):" +
+                                "\nПервый элемент:");
+                        TaskStatus first = TaskStatus.valueOf(sc.nextLine().toUpperCase());
+                        System.out.println("Второй элемент:");
+                        TaskStatus second = TaskStatus.valueOf(sc.nextLine().toUpperCase());
+                        System.out.println("Третий элемент:");
+                        TaskStatus third = TaskStatus.valueOf(sc.nextLine().toUpperCase());
+                        System.out.println(taskService.getSortedTasksByStatusOrder(first, second, third));
+                        return;
+                    default:
+                        System.out.println("Неизвестная команда. Выход в главное меню.");
+                        return;
+                }
+            case "2":
+                System.out.println("Сортировка по сроку выполнения:");
+                System.out.println(taskService.getSortedTasksByDeadline());
+            default:
+                System.out.println("Неизвестная команда. Выход в главное меню.");
+        }
+    }
+
+    private static void deleteTask() {
+        System.out.println("Введите имя/ID задачи: ");
+        Task task = taskService.taskRepository.getTask(sc.nextLine());
+        if (task == null) {
+            System.out.println("Задачи с таким именем не существует. Выход в главное меню.");
+            return;
+        }
+        taskService.taskRepository.delTask(task);
+        System.out.println("Задача успешно удалена.");
+    }
+
+    private static void filterTaskList() {
+        System.out.println("Введите нужный статус (TODO, IN_PROCESS, DONE)");
+        switch (sc.nextLine().toUpperCase()){
+            case "TODO":
+                System.out.println(taskService.getTasksByStatus(TaskStatus.TODO));
+                return;
+            case "IN_PROCESS":
+                System.out.println(taskService.getTasksByStatus(TaskStatus.IN_PROCESS));
+                return;
+            case "DONE":
+                System.out.println(taskService.getTasksByStatus(TaskStatus.DONE));
+                return;
+            default:
+                System.out.println("Неизвестная команда. Выход в главное меню.");
         }
     }
 }

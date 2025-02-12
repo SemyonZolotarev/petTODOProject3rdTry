@@ -18,6 +18,10 @@ public class TaskRepository {
         tasks.add(task);
     }
 
+    public void delTask(Task task) {
+        tasks.remove(task);
+    }
+
     public Task getTask(String name) {
         try {
             int ID = Integer.parseInt(name);

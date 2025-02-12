@@ -87,4 +87,10 @@ public class TaskService {
                         t1.getDeadline().compareTo(t2.getDeadline()))
                 .collect(Collectors.toList());
     }
+
+    public List<Task> getTasksByStatus(TaskStatus status){
+        return taskRepository.getAllTasks().stream()
+                .filter(task -> task.getStatus()==status)
+                .collect(Collectors.toList());
+    }
 }
