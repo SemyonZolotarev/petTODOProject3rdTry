@@ -18,14 +18,14 @@ public class TaskRepository {
         tasks.add(task);
     }
 
-    public void delTask(Task task) {
+    public void deleteTask(Task task) {
         tasks.remove(task);
     }
 
     public Task getTask(String name) {
         try {
-            int ID = Integer.parseInt(name);
-            return getTaskByID(ID);
+            int id = Integer.parseInt(name);
+            return getTaskByID(id);
         } catch (NumberFormatException e) {
             try {
                 return getTaskByName(name);
@@ -40,8 +40,8 @@ public class TaskRepository {
                 .findFirst().orElseThrow(() -> new IllegalArgumentException("Задача с таким именем не найдена."));
     }
 
-    public Task getTaskByID(int ID) {
-        return tasks.stream().filter(task -> task.getID() == ID)
+    public Task getTaskByID(int id) {
+        return tasks.stream().filter(task -> task.getID() == id)
                 .findFirst().orElseThrow(() -> new IllegalArgumentException("Задача с таким ID не найдена."));
     }
 
