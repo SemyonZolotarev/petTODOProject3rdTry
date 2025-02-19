@@ -4,6 +4,7 @@ import lombok.Getter;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -29,16 +30,23 @@ public class TaskService {
     @Getter
     TaskRepository taskRepository = new TaskRepository();
 
+    private static LocalDate validDate() {
+        System.out.println("Формат даты неверный. Устанавливается дедлайн на завтра.\n");
+        return LocalDate.now().plusDays(1);
+    }
 
     public LocalDate checkDeadlineByDate(String deadline) {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        Optional<LocalDate> date = Optional.of(LocalDate.parse(deadline, dtf));
 
-        if(date.isPresent() && !LocalDate.now().minusDays(1).isBefore(date.get())){
-            return date.get();
-        } else {
-            System.out.println("Формат даты неверный. Устанавливается дедлайн на завтра.\n");
-            return LocalDate.now().plusDays(1);
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        try {
+            LocalDate date = LocalDate.parse(deadline, dtf);
+            if(!LocalDate.now().minusDays(1).isBefore(date)){
+                return date;
+            } else {
+                return validDate();
+            }
+        } catch (DateTimeParseException e){
+            return validDate();
         }
     }
 
