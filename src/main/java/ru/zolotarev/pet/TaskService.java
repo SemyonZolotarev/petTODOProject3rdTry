@@ -8,7 +8,6 @@ import java.time.format.DateTimeParseException;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class TaskService {
@@ -28,7 +27,7 @@ public class TaskService {
      * */
 
     @Getter
-    TaskRepository taskRepository = new TaskRepository();
+    public TaskRepository taskRepository = new TaskRepository();
 
     private static LocalDate validDate() {
         System.out.println("Формат даты неверный. Устанавливается дедлайн на завтра.\n");
@@ -40,12 +39,12 @@ public class TaskService {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         try {
             LocalDate date = LocalDate.parse(deadline, dtf);
-            if(!LocalDate.now().minusDays(1).isBefore(date)){
+            if (!LocalDate.now().minusDays(1).isBefore(date)) {
                 return date;
             } else {
                 return validDate();
             }
-        } catch (DateTimeParseException e){
+        } catch (DateTimeParseException e) {
             return validDate();
         }
     }
@@ -59,11 +58,18 @@ public class TaskService {
     }
 
     public void checkingForADefaultName(Task task) {
-        if (task.getName() == "DefaultName_") {
+        if (task.getName().equals("DefaultName_")) {
             task.setName("DefaultName_" + task.getID());
         }
     }
 
+    public void addTask(Task task){
+        taskRepository.addTask(task);
+    }
+
+    public List<Task> getTaskList(){
+        return taskRepository.getTaskList();
+    }
 
     public List<Task> getSortedTasksByStatusOrder(TaskStatus first, TaskStatus second, TaskStatus third) {
         Map<TaskStatus, Integer> statusOrder = new EnumMap<>(TaskStatus.class);
@@ -71,48 +77,28 @@ public class TaskService {
         statusOrder.put(second, 2);
         statusOrder.put(third, 3);
 
-        return taskRepository.getAllTasks().stream()
+        return taskRepository.getTaskList().stream()
                 .sorted((t1, t2) -> Integer.compare(statusOrder.get(t1.getStatus()), statusOrder.get(t2.getStatus())))
                 .collect(Collectors.toList());
     }
 
     public List<Task> getSortedTasksByDeadline() {
-        return taskRepository.getAllTasks().stream()
+        return taskRepository.getTaskList().stream()
                 .sorted((t1, t2) ->
                         t1.getDeadline().compareTo(t2.getDeadline()))
                 .collect(Collectors.toList());
     }
 
     public List<Task> getTasksByStatus(TaskStatus status) {
-        return taskRepository.getAllTasks().stream()
+        return taskRepository.getTaskList().stream()
                 .filter(task -> task.getStatus() == status)
                 .collect(Collectors.toList());
     }
 
     public List<Task> getSortedTasksByStatus() {
-        return taskRepository.getAllTasks().stream()
+        return taskRepository.getTaskList().stream()
                 .sorted((t1, t2) -> t1.getStatus().compareTo(t2.getStatus()))
                 .collect(Collectors.toList());
     }
-
-//
-//    public void changeTaskName(String taskNameOrID, String newTaskName) {
-//        Task task = taskRepository.getTask(taskNameOrID);
-//        task.setName(newTaskName);
-//    }
-//
-//    public void changeTaskDeadline(String taskNameOrID, LocalDate newDeadline) {
-//        Task task = taskRepository.getTask(taskNameOrID);
-//        task.setDeadline(newDeadline);
-//    }
-//
-//    public void changeTaskDescription(String taskNameOrID, String newDescription) {
-//        Task task = taskRepository.getTask(taskNameOrID);
-//        task.setDescription(newDescription);
-//    }
-//
-//    public void changeTaskStatus(String taskNameOrID, TaskStatus status) {
-//        Task task = taskRepository.getTask(taskNameOrID);
-//        task.setStatus(status);
-//    }
+    
 }
