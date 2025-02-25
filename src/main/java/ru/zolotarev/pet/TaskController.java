@@ -134,7 +134,7 @@ public class TaskController {
                         "\n'2' - сортировка с параметрами");
 
                 switch (sc.nextLine()) {
-                    case "1" -> System.out.println(taskService.getSortedTasksByStatus());
+                    case "1" -> System.out.println(taskService.getSortedTaskListByStatus());
 
                     case "2" -> {
                         System.out.println("Введите порядок сортировки по статусу (TODO, IN_PROCESS, DONE):" +
@@ -145,7 +145,7 @@ public class TaskController {
                             TaskStatus second = TaskStatus.valueOf(sc.nextLine().toUpperCase());
                             System.out.println("Третий элемент:");
                             TaskStatus third = TaskStatus.valueOf(sc.nextLine().toUpperCase());
-                            System.out.println(taskService.getSortedTasksByStatusOrder(first, second, third));
+                            System.out.println(taskService.getSortedTaskListByStatusOrder(first, second, third));
                         } catch (IllegalArgumentException e) {
                             System.out.println("Неизвестное значение. Выход в главное меню.");
                         }
@@ -154,7 +154,7 @@ public class TaskController {
             }
             case "2" -> {
                 System.out.println("Сортировка по сроку выполнения:");
-                System.out.println(taskService.getSortedTasksByDeadline());
+                System.out.println(taskService.getSortedTaskListByDeadline());
             }
 
             default -> System.out.println("Неизвестная команда. Выход в главное меню.");
@@ -176,9 +176,9 @@ public class TaskController {
         System.out.println("Введите нужный статус (TODO, IN_PROCESS, DONE)");
         try {
             switch (TaskStatus.valueOf(sc.nextLine().toUpperCase())) {
-                case TODO -> System.out.println(taskService.getTasksByStatus(TaskStatus.TODO));
-                case IN_PROCESS -> System.out.println(taskService.getTasksByStatus(TaskStatus.IN_PROCESS));
-                case DONE -> System.out.println(taskService.getTasksByStatus(TaskStatus.DONE));
+                case TODO -> System.out.println(taskService.getTaskListByStatus(TaskStatus.TODO));
+                case IN_PROCESS -> System.out.println(taskService.getTaskListByStatus(TaskStatus.IN_PROCESS));
+                case DONE -> System.out.println(taskService.getTaskListByStatus(TaskStatus.DONE));
             }
         } catch (IllegalArgumentException e) {
             System.out.println("Неизвестная команда. Выход в главное меню.");
