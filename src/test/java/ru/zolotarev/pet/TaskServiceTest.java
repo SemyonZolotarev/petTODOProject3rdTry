@@ -57,20 +57,21 @@ public class TaskServiceTest {
     void getTaskListByStatusTest() {
         TaskStatus firstStatus = TaskStatus.TODO;
         TaskStatus secondStatus = TaskStatus.IN_PROCESS;
+        TaskStatus thirdStatus = TaskStatus.DONE;
 
         Task firstTask = new Task(DEFAULT_NAME, TEST_DESCRIPTION,
                 LocalDate.of(TASK_YEAR, TASK_MONTH, TASK_DAY_OF_MONTH), firstStatus);
         Task secondTask = new Task(DEFAULT_NAME, TEST_DESCRIPTION,
-                LocalDate.of(TASK_YEAR, TASK_MONTH, TASK_DAY_OF_MONTH), firstStatus);
-        Task thirdTask = new Task(DEFAULT_NAME, TEST_DESCRIPTION,
                 LocalDate.of(TASK_YEAR, TASK_MONTH, TASK_DAY_OF_MONTH), secondStatus);
+        Task thirdTask = new Task(DEFAULT_NAME, TEST_DESCRIPTION,
+                LocalDate.of(TASK_YEAR, TASK_MONTH, TASK_DAY_OF_MONTH), thirdStatus);
 
-        taskService.addTask(firstTask);
-        taskService.addTask(secondTask);
         taskService.addTask(thirdTask);
+        taskService.addTask(secondTask);
+        taskService.addTask(firstTask);
 
         List<Task> expectedTaskList = List.of(firstTask, secondTask, thirdTask);
-        List<Task> resultTaskList = taskService.getSortedTaskListByDeadline();
+        List<Task> resultTaskList = taskService.getSortedTaskListByStatus();
 
         Assertions.assertEquals(expectedTaskList, resultTaskList);
     }

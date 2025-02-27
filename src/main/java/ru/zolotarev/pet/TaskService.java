@@ -70,9 +70,9 @@ public class TaskService {
 
     public List<Task> getSortedTaskListByStatusOrder(TaskStatus first, TaskStatus second, TaskStatus third) {
         Map<TaskStatus, Integer> statusOrder = new EnumMap<>(TaskStatus.class);
-        statusOrder.put(first, 1);
+        statusOrder.put(first, 3);
         statusOrder.put(second, 2);
-        statusOrder.put(third, 3);
+        statusOrder.put(third, 1);
 
         return taskRepository.getTaskList().stream()
                 .sorted((t1, t2) -> Integer.compare(statusOrder.get(t1.getStatus()), statusOrder.get(t2.getStatus())))
